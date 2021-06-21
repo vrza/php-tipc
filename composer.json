@@ -1,0 +1,23 @@
+{
+    "name": "vrza/php-tipc",
+    "description": "Easy IPC for PHP services",
+    "type": "library",
+    "keywords": ["ipc", "sockets", "bsd", "posix"],
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Vladimir Vrzić",
+            "email": "vvrzic@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.1",
+        "ext-sockets": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "TIPC\\": "src/",
+            "TIPC\\Test\\": "test/"
+        }
+    }
+}
