@@ -18,7 +18,7 @@ class UnixSocketStreamServer
         $this->msgHandler = $msgHandler;
     }
 
-    private static function cleanUpFile($path)
+    private static function cleanUpFile(string $path): void
     {
         $dir = dirname($path);
         if (!file_exists($dir)) {
@@ -75,7 +75,7 @@ class UnixSocketStreamServer
         return true;
     }
 
-    public function checkMessages()
+    public function checkMessages(): void
     {
         $limit = self::SOCKET_BACKLOG;
         $cnt = 0;
@@ -116,7 +116,7 @@ class UnixSocketStreamServer
         }
     }
 
-    public function sendResponse($response, $connectionSocket)
+    public function sendResponse(string $response, $connectionSocket): void
     {
         $bytes = socket_send($connectionSocket, $response, strlen($response), 0);
         fwrite(STDOUT, ">>>> $response" . PHP_EOL);
