@@ -1,1 +1,5 @@
-Tiny IPC library for PHP services
+= Tiny IPC library for PHP services
+
+== Getting started
+
+A fully working example is included as `client.php` and `server.php`.
