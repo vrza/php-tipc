@@ -6,8 +6,8 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 use TIPC\UnixSocketStreamClient;
 
-const EXIT_USAGE = 2;
-const EXIT_NO_CONNECTION = 3;
+const EXIT_USAGE = 64;
+const EXIT_NO_CONNECTION = 69;
 
 $file = '/run/user/' . posix_geteuid() . '/tipc/socket';
 
