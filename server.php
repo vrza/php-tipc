@@ -8,7 +8,7 @@ use TIPC\UnixSocketStreamServer;
 use TIPC\Test\MockMessageHandler;
 
 const TICK_TIME = 1;
-const EXIT_SOCKET = 2;
+const EXIT_SOCKET = 72;
 
 $file = '/run/user/' . posix_geteuid() . '/tipc/socket';
 $msgHandler = new MockMessageHandler();
