@@ -17,7 +17,7 @@ class UnixSocketStreamClient
 
     public function __destruct()
     {
-        if (get_resource_type($this->socket) === 'Socket') {
+        if (is_resource($this->socket) && get_resource_type($this->socket) === 'Socket') {
             socket_close($this->socket);
         }
     }
