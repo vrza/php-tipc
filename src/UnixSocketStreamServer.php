@@ -9,13 +9,22 @@ class UnixSocketStreamServer
     const SOCKET_BACKLOG = 4 * 1024;
 
     private $path;
-    private $socket;
     private $msgHandler;
+    private $recvBufSize;
+    private $socket;
 
-    public function __construct(string $path, MessageHandler $msgHandler)
+    public function __construct(string $path, MessageHandler $msgHandler, int $recvBufSize = self::RECV_BUF_SIZE)
     {
         $this->path = $path;
         $this->msgHandler = $msgHandler;
+        $this->recvBufSize = $recvBufSize;
+    }
+
+    public function __destruct()
+    {
+        if (is_resource($this->socket) && get_resource_type($this->socket) === 'Socket') {
+            $this->close();
+        }
     }
 
     private static function cleanUpFile(string $path): void
@@ -27,6 +36,11 @@ class UnixSocketStreamServer
         if (file_exists($path)) {
             unlink($path);
         }
+    }
+
+    public function close(): void
+    {
+        socket_close($this->socket);
     }
 
     public function listen(): bool
@@ -102,7 +116,7 @@ class UnixSocketStreamServer
     public function receiveMessage($connectionSocket)
     {
         fwrite(STDERR, '!' . PHP_EOL);
-        if (($bytes = socket_recv($connectionSocket, $buf, self::RECV_BUF_SIZE, MSG_DONTWAIT)) === false) {
+        if (($bytes = socket_recv($connectionSocket, $buf, $this->recvBufSize, MSG_DONTWAIT)) === false) {
             fwrite(
                 STDERR,
                 "socket_recv() failed" . PHP_EOL .
