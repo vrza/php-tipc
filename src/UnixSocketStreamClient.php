@@ -7,12 +7,14 @@ class UnixSocketStreamClient
     const RECV_BUF_SIZE = 64 * 1024;
 
     private $path;
+    private $recvBufSize;
     private $socket;
     public $verbose = 1;
 
-    public function __construct(string $path)
+    public function __construct(string $path, int $recvBufSize = self::RECV_BUF_SIZE)
     {
         $this->path = $path;
+        $this->recvBufSize = $recvBufSize;
     }
 
     public function __destruct()
@@ -60,7 +62,7 @@ class UnixSocketStreamClient
 
     public function receiveMessage()
     {
-        if (($bytes = @socket_recv($this->socket, $buf, self::RECV_BUF_SIZE, MSG_WAITALL)) === false) {
+        if (($bytes = @socket_recv($this->socket, $buf, $this->recvBufSize, MSG_WAITALL)) === false) {
             if ($this->verbose) fwrite(
                 STDERR,
                 "socket_recv() failed: " .
