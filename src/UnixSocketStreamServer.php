@@ -38,11 +38,6 @@ class UnixSocketStreamServer
         }
     }
 
-    public function close(): void
-    {
-        socket_close($this->socket);
-    }
-
     public function listen(): bool
     {
         $this->socket = socket_create(AF_UNIX, SOCK_STREAM, 0);
@@ -87,6 +82,11 @@ class UnixSocketStreamServer
         }
 
         return true;
+    }
+
+    public function close(): void
+    {
+        socket_close($this->socket);
     }
 
     public function checkMessages(): void

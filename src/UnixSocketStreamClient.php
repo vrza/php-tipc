@@ -20,7 +20,7 @@ class UnixSocketStreamClient
     public function __destruct()
     {
         if (is_resource($this->socket) && get_resource_type($this->socket) === 'Socket') {
-            socket_close($this->socket);
+            $this->disconnect();
         }
     }
 
@@ -43,6 +43,11 @@ class UnixSocketStreamClient
             if ($this->verbose > 1) fwrite(STDERR, "connected." . PHP_EOL);
         }
         return $result;
+    }
+
+    public function disconnect(): void
+    {
+        socket_close($this->socket);
     }
 
     public function sendMessage(string $msg)
@@ -75,8 +80,4 @@ class UnixSocketStreamClient
         }
     }
 
-    public function disconnect(): void
-    {
-        socket_close($this->socket);
-    }
 }
