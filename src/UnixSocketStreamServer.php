@@ -89,8 +89,13 @@ class UnixSocketStreamServer
         socket_close($this->socket);
     }
 
-    public function checkMessages(): void
+    public function checkMessages(int $timeoutSeconds = 0, int $timeoutMicroseconds = 0): void
     {
+        $read = [$this->socket];
+        $write = $except = null;
+        if (!(socket_select($read, $write, $except, $timeoutSeconds, $timeoutMicroseconds) > 0)) {
+            return;
+        }
         $limit = self::SOCKET_BACKLOG;
         $cnt = 0;
         while (($connectionSocket = socket_accept($this->socket)) !== false && ++$cnt < $limit) {

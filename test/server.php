@@ -1,8 +1,9 @@
+#!/usr/bin/env php
 <?php
 
 error_reporting(E_ALL);
 
-require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 use TIPC\UnixSocketStreamServer;
 use TIPC\Test\MockMessageHandler;
@@ -19,6 +20,5 @@ if ($server->listen() === false) {
 }
 while (true) {
     fwrite(STDERR, '.');
-    $server->checkMessages();
-    sleep(TICK_TIME);
+    $server->checkMessages(TICK_TIME);
 }
