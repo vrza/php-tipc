@@ -8,6 +8,6 @@ class MockMessageHandler implements MessageHandler
 {
     public function handleMessage(string $msg): string
     {
-        return ("Hello client, this is server, acknowledging request for $msg");
+        return "Hello client, this is server, acknowledging request for $msg";
     }
 }
