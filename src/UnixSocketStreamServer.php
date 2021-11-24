@@ -74,6 +74,21 @@ class UnixSocketStreamServer
 
     public function checkMessages(int $timeoutSeconds = 0, int $timeoutMicroseconds = 0): void
     {
+        $limit = 1024;
+        $cnt = 0;
+        $sec = $timeoutSeconds;
+        $usec = $timeoutMicroseconds;
+        while ($this->checkMessage($sec, $usec) > 0 && $cnt < $limit) {
+            $sec = $usec = 0;
+            $cnt++;
+        }
+        if ($cnt > 0) {
+            fwrite(STDERR, "server handled $cnt messages" . PHP_EOL);
+        }
+    }
+
+    private function checkMessage(int $timeoutSeconds = 0, int $timeoutMicroseconds = 0): int
+    {
         $read = [$this->socket];
         $write = $except = null;
         set_error_handler(function () {});
@@ -84,7 +99,7 @@ class UnixSocketStreamServer
             if ($error !== self::EINTR) {
                 fwrite(STDERR, "socket_select() failed with error $error: " . socket_strerror($error) . PHP_EOL);
             }
-            return;
+            return -$error;
         }
         if ($num > 0) {
             foreach ($read as $socket) {
@@ -92,7 +107,7 @@ class UnixSocketStreamServer
                     $error = socket_last_error($socket);
                     if ($error !== self::ESUCCESS) {
                         fwrite(STDERR, "socket_accept() failed with error $error: " . socket_strerror($error) . PHP_EOL);
-                        return;
+                        return -$error;
                     }
                 }
                 $msg = $this->receiveMessage($connectionSocket);
@@ -102,6 +117,7 @@ class UnixSocketStreamServer
                 }
             }
         }
+        return $num;
     }
 
     public function receiveMessage($connectionSocket)
