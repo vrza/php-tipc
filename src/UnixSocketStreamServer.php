@@ -76,7 +76,9 @@ class UnixSocketStreamServer
     {
         $read = [$this->socket];
         $write = $except = null;
+        set_error_handler(function () {});
         $num = @socket_select($read, $write, $except, $timeoutSeconds, $timeoutMicroseconds);
+        restore_error_handler();
         if ($num === false) {
             $error = socket_last_error();
             if ($error !== self::EINTR) {
