@@ -78,9 +78,8 @@ class UnixSocketStreamServer
         $cnt = 0;
         $sec = $timeoutSeconds;
         $usec = $timeoutMicroseconds;
-        while ($this->checkMessage($sec, $usec) > 0 && $cnt < $limit) {
+        while ($this->checkMessage($sec, $usec) > 0 && $cnt++ < $limit) {
             $sec = $usec = 0;
-            $cnt++;
         }
         if ($cnt > 0) {
             fwrite(STDERR, "server handled $cnt messages" . PHP_EOL);
