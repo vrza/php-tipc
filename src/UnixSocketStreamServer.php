@@ -109,14 +109,19 @@ class UnixSocketStreamServer
                         return -$error;
                     }
                 }
-                $msg = $this->receiveMessage($connectionSocket);
-                if ($msg !== null) {
-                    $response = $this->msgHandler->handleMessage($msg);
-                    $this->sendResponse($response, $connectionSocket);
-                }
+                $this->handleConnection($connectionSocket);
             }
         }
         return $num;
+    }
+
+    private function handleConnection($connectionSocket) {
+        $msg = $this->receiveMessage($connectionSocket);
+        if ($msg !== null) {
+            $response = $this->msgHandler->handleMessage($msg);
+            $this->sendResponse($response, $connectionSocket);
+        }
+        socket_close($connectionSocket);
     }
 
     public function receiveMessage($connectionSocket)
