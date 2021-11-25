@@ -9,8 +9,8 @@ class UnixSocketStreamServer
     const RECV_BUF_SIZE = 64 * 1024;
     const SOCKET_BACKLOG = 4 * 1024;
 
-    private $path;
     private $msgHandler;
+    private $path;
     private $recvBufSize;
     private $socket;
 
