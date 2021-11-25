@@ -9,8 +9,8 @@ class UnixSocketStreamServer
     const RECV_BUF_SIZE = 64 * 1024;
     const SOCKET_BACKLOG = 4 * 1024;
 
-    private $path;
     private $msgHandler;
+    private $path;
     private $recvBufSize;
     private $socket;
 
@@ -74,6 +74,20 @@ class UnixSocketStreamServer
 
     public function checkMessages(int $timeoutSeconds = 0, int $timeoutMicroseconds = 0): void
     {
+        $limit = 1024;
+        $cnt = 0;
+        $sec = $timeoutSeconds;
+        $usec = $timeoutMicroseconds;
+        while ($this->checkMessage($sec, $usec) > 0 && $cnt++ < $limit) {
+            $sec = $usec = 0;
+        }
+        if ($cnt > 0) {
+            fwrite(STDERR, "server handled $cnt messages" . PHP_EOL);
+        }
+    }
+
+    private function checkMessage(int $timeoutSeconds = 0, int $timeoutMicroseconds = 0): int
+    {
         $read = [$this->socket];
         $write = $except = null;
         set_error_handler(function () {});
@@ -84,7 +98,7 @@ class UnixSocketStreamServer
             if ($error !== self::EINTR) {
                 fwrite(STDERR, "socket_select() failed with error $error: " . socket_strerror($error) . PHP_EOL);
             }
-            return;
+            return -$error;
         }
         if ($num > 0) {
             foreach ($read as $socket) {
@@ -92,16 +106,22 @@ class UnixSocketStreamServer
                     $error = socket_last_error($socket);
                     if ($error !== self::ESUCCESS) {
                         fwrite(STDERR, "socket_accept() failed with error $error: " . socket_strerror($error) . PHP_EOL);
-                        return;
+                        return -$error;
                     }
                 }
-                $msg = $this->receiveMessage($connectionSocket);
-                if ($msg !== null) {
-                    $response = $this->msgHandler->handleMessage($msg);
-                    $this->sendResponse($response, $connectionSocket);
-                }
+                $this->handleConnection($connectionSocket);
             }
         }
+        return $num;
+    }
+
+    private function handleConnection($connectionSocket) {
+        $msg = $this->receiveMessage($connectionSocket);
+        if ($msg !== null) {
+            $response = $this->msgHandler->handleMessage($msg);
+            $this->sendResponse($response, $connectionSocket);
+        }
+        socket_close($connectionSocket);
     }
 
     public function receiveMessage($connectionSocket)
