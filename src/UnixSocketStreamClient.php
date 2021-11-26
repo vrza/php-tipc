@@ -67,7 +67,7 @@ class UnixSocketStreamClient
 
     public function receiveMessage()
     {
-        if (($bytes = @socket_recv($this->socket, $buf, $this->recvBufSize, MSG_WAITALL)) === false) {
+        if (($bytes = @socket_recv($this->socket, $buf, $this->recvBufSize, 0)) === false) {
             if ($this->verbose) fwrite(
                 STDERR,
                 "socket_recv() failed: " .
