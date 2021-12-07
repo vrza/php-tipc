@@ -1,5 +1,9 @@
-= Tiny IPC library for PHP services
+= Tiny IPC library for PHP
+
+User-friendly, object-oriented API that allows PHP processes to exchange messages over Unix domain sockets.
+
+Messages are PHP strings. Serialisation format is left to user's choice.
 
 == Getting started
 
-A fully working example is included as `client.php` and `server.php`.
+A fully working example is included as `test/server.php` and `test/client.php`.
