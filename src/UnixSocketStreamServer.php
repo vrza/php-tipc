@@ -115,7 +115,8 @@ class UnixSocketStreamServer
         return $num;
     }
 
-    private function handleConnection($connectionSocket) {
+    private function handleConnection($connectionSocket)
+    {
         $msg = $this->receiveMessage($connectionSocket);
         if ($msg !== null) {
             $response = $this->msgHandler->handleMessage($msg);
