@@ -145,4 +145,57 @@ class UnixSocketStreamServer
         fwrite(STDOUT, ">>>> $response" . PHP_EOL);
         fwrite(STDERR, "$bytes bytes sent" . PHP_EOL);
     }
+
+    /**
+     * Given a file name and a list of candidate directories, find a path
+     * where a Unix socket file can be created by the server.
+     *
+     * If a directory from the list does not exist an attempt will be made
+     * to create it.
+     *
+     * Returns the path to the Unix socket file,
+     * or null if a socket file can not be created.
+     *
+     * @param string $socketFileName
+     * @param array $socketDirs
+     * @return string|null
+     */
+    public static function findSocketPath(string $socketFileName, array $socketDirs): ?string
+    {
+        if (is_null($socketDir = self::ensureWritableDir($socketDirs))) {
+            fwrite(STDERR, "Could not find a writable directory for Unix domain socket: $socketFileName" . PHP_EOL);
+            fwrite(STDERR, "Ensure one of these is writable: " . implode(', ', $socketDirs) . PHP_EOL);
+            return null;
+        }
+        return $socketDir . '/' . $socketFileName;
+    }
+
+    /**
+     * Try to find a writable directory from a list of candidates,
+     * possibly creating a new directory if possible.
+     *
+     * We are intentionally suppressing errors when attempting to create
+     * directories, regardless of the reason (file exists,
+     * insufficient permissions...), as this is not a critical failure.
+     *
+     * Returns path to a writeable directory, or false if a writeable
+     * directory is not available.
+     *
+     * @param array $candidateDirs
+     * @return string|false
+     */
+    private static function ensureWritableDir(array $candidateDirs): ?string
+    {
+        foreach ($candidateDirs as $candidateDir) {
+            if (!file_exists($candidateDir)) {
+                set_error_handler(function () {});
+                @mkdir($candidateDir, 0700, true);
+                restore_error_handler();
+            }
+            if (is_dir($candidateDir) && is_writable($candidateDir)) {
+                return $candidateDir;
+            }
+        }
+        return null;
+    }
 }

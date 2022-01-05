@@ -80,4 +80,37 @@ class UnixSocketStreamClient
         }
     }
 
+    /**
+     * Given a file name and a list of candidate directories,
+     * find an existing, writable, Unix socket file for the client
+     * to connect to.
+     *
+     * Return the path to the Unix socket file,
+     * or null if no socket file is found.
+     *
+     * @param string $socketFileName
+     * @param array $socketDirs
+     * @return string|null
+     */
+    public static function findSocketPath(string $socketFileName, array $socketDirs): ?string
+    {
+        foreach ($socketDirs as $dir) {
+            $candidate = $dir . '/' . $socketFileName;
+            if (is_writable($candidate)) {
+                return $candidate;
+            }
+        }
+        fwrite(STDERR, "Could not find existing Unix domain socket: $socketFileName" . PHP_EOL);
+        fwrite(
+            STDERR,
+            "Tried: " . implode(
+                ', ',
+                array_map(function ($dir) use ($socketFileName) {
+                    return $dir . '/' . $socketFileName;
+                }, $socketDirs)
+            ) . PHP_EOL
+        );
+        return null;
+    }
+
 }
