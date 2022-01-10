@@ -125,7 +125,7 @@ class UnixSocketStreamServer
         socket_close($connectionSocket);
     }
 
-    public function receiveMessage($connectionSocket)
+    private function receiveMessage($connectionSocket)
     {
         fwrite(STDERR, '!' . PHP_EOL);
         if (($bytes = socket_recv($connectionSocket, $buf, $this->recvBufSize, 0)) === false) {
@@ -139,7 +139,7 @@ class UnixSocketStreamServer
         }
     }
 
-    public function sendResponse(string $response, $connectionSocket): void
+    private function sendResponse(string $response, $connectionSocket): void
     {
         $bytes = socket_send($connectionSocket, $response, strlen($response), 0);
         fwrite(STDOUT, ">>>> $response" . PHP_EOL);
