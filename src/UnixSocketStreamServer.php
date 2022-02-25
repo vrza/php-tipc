@@ -72,7 +72,7 @@ class UnixSocketStreamServer
         socket_close($this->socket);
     }
 
-    public function checkMessages(int $timeoutSeconds = 0, int $timeoutMicroseconds = 0): void
+    public function checkMessages(int $timeoutSeconds = 0, int $timeoutMicroseconds = 0): int
     {
         $limit = 1024;
         $cnt = 0;
@@ -84,6 +84,7 @@ class UnixSocketStreamServer
         if ($cnt > 0) {
             fwrite(STDERR, "server handled $cnt messages" . PHP_EOL);
         }
+        return $cnt;
     }
 
     private function checkMessage(int $timeoutSeconds = 0, int $timeoutMicroseconds = 0): int
