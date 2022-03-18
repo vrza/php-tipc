@@ -9,6 +9,7 @@ class UnixSocketStreamClient
     private $path;
     private $recvBufSize;
     private $socket;
+    private $connected = false;
     public $verbose = 1;
 
     public function __construct(string $path, int $recvBufSize = self::RECV_BUF_SIZE)
@@ -22,6 +23,11 @@ class UnixSocketStreamClient
         if (is_resource($this->socket) && get_resource_type($this->socket) === 'Socket') {
             $this->disconnect();
         }
+    }
+
+    public function isConnected(): bool
+    {
+        return $this->connected;
     }
 
     public function connect(): bool
@@ -40,6 +46,7 @@ class UnixSocketStreamClient
                 socket_strerror(socket_last_error($this->socket)) . PHP_EOL
             );
         } else {
+            $this->connected = true;
             if ($this->verbose > 1) fwrite(STDERR, "connected." . PHP_EOL);
         }
         return $result;
@@ -48,6 +55,7 @@ class UnixSocketStreamClient
     public function disconnect(): void
     {
         socket_close($this->socket);
+        $this->connected = false;
     }
 
     public function sendMessage(string $msg)
