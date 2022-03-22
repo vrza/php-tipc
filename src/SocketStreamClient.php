@@ -2,19 +2,19 @@
 
 namespace TIPC;
 
-class UnixSocketStreamClient
+class SocketStreamClient
 {
     const RECV_BUF_SIZE = 64 * 1024;
 
-    private $path;
+    private $address;
     private $recvBufSize;
     private $socket;
     private $connected = false;
     public $verbose = 1;
 
-    public function __construct(string $path, int $recvBufSize = self::RECV_BUF_SIZE)
+    public function __construct(SocketAddress $address, int $recvBufSize = self::RECV_BUF_SIZE)
     {
-        $this->path = $path;
+        $this->address = $address;
         $this->recvBufSize = $recvBufSize;
     }
 
@@ -32,14 +32,14 @@ class UnixSocketStreamClient
 
     public function connect(): bool
     {
-        if (($this->socket = socket_create(AF_UNIX, SOCK_STREAM, 0)) === false) {
+        if (($this->socket = socket_create($this->address->getDomain(), SOCK_STREAM, 0)) === false) {
             if ($this->verbose) fwrite(
                 STDERR,
                 "socket_create() failed" . PHP_EOL
             );
         }
         if ($this->verbose > 1) fwrite(STDERR, "Attempting to connect to $this->path... ");
-        if (($result = @socket_connect($this->socket, $this->path)) === false) {
+        if (($result = @socket_connect($this->socket, $this->address->getAddress(), $this->address->getPort())) === false) {
             if ($this->verbose) fwrite(
                 STDERR,
                 "socket_connect() failed: " .
@@ -86,39 +86,6 @@ class UnixSocketStreamClient
             if ($this->verbose > 1) fwrite(STDERR, "$bytes bytes received" . PHP_EOL);
             return $buf;
         }
-    }
-
-    /**
-     * Given a file name and a list of candidate directories,
-     * find an existing, writable, Unix socket file for the client
-     * to connect to.
-     *
-     * Return the path to the Unix socket file,
-     * or null if no socket file is found.
-     *
-     * @param string $socketFileName
-     * @param array $socketDirs
-     * @return string|null
-     */
-    public static function findSocketPath(string $socketFileName, array $socketDirs): ?string
-    {
-        foreach ($socketDirs as $dir) {
-            $candidate = $dir . '/' . $socketFileName;
-            if (is_writable($candidate)) {
-                return $candidate;
-            }
-        }
-        fwrite(STDERR, "Could not find existing Unix domain socket: $socketFileName" . PHP_EOL);
-        fwrite(
-            STDERR,
-            "Tried: " . implode(
-                ', ',
-                array_map(function ($dir) use ($socketFileName) {
-                    return $dir . '/' . $socketFileName;
-                }, $socketDirs)
-            ) . PHP_EOL
-        );
-        return null;
     }
 
 }
