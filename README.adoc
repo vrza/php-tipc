@@ -6,4 +6,4 @@ Messages are PHP strings. Serialisation format is left to user's choice.
 
 == Getting started
 
-A fully working example is included as `test/server.php` and `test/client.php`.
+See examples in the `test/` directory.
