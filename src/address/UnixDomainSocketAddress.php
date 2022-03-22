@@ -44,4 +44,12 @@ class UnixDomainSocketAddress extends SocketAddress
     {
         return 0;
     }
+
+    /**
+     * @return string
+     */
+    public function __toString(): string
+    {
+        return $this->path;
+    }
 }

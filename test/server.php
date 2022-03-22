@@ -29,9 +29,10 @@ $server = new SocketStreamsServer([
     new SocketData($address3, $msgHandler3),
 ]);
 if ($server->listen() === false) {
-    fwrite(STDERR, "Fatal error: could not listen on sockets: $file1, $file2" . PHP_EOL);
+    fwrite(STDERR, "Fatal error: could not listen on one or more of: $address1, $address2, $address3" . PHP_EOL);
     exit(EXIT_SOCKET);
 }
+fwrite(STDOUT, '==> Listening on:' . PHP_EOL . $address1 . PHP_EOL . $address2 . PHP_EOL . $address3 . PHP_EOL);
 while (true) {
     fwrite(STDERR, '.');
     $server->checkMessages(TICK_TIME);

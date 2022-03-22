@@ -38,4 +38,12 @@ class InetSocketAddress extends SocketAddress
     {
         return $this->domain;
     }
+
+    /**
+     * @return string
+     */
+    public function __toString(): string
+    {
+        return "{$this->getAddress()}:{$this->getPort()}";
+    }
 }
