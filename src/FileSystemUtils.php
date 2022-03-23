@@ -54,7 +54,7 @@ class FileSystemUtils
     {
         if (is_null($socketDir = static::ensureWritableDir($candidateDirs))) {
             fwrite(STDERR, "Could not find a writable directory for: $fileName" . PHP_EOL);
-            fwrite(STDERR, "Ensure one of these is writable: " . implode(', ', $candida) . PHP_EOL);
+            fwrite(STDERR, "Ensure one of these is writable: " . implode(', ', $candidateDirs) . PHP_EOL);
             return null;
         }
         return $socketDir . '/' . $fileName;
@@ -72,13 +72,15 @@ class FileSystemUtils
      * directory is not available.
      *
      * @param array $candidateDirs
-     * @return string|false
+     * @return ?string
      */
     private static function ensureWritableDir(array $candidateDirs): ?string
     {
         foreach ($candidateDirs as $candidateDir) {
             if (!file_exists($candidateDir)) {
-                set_error_handler(function () {});
+                set_error_handler(static function (int $_errno, string $_errstr): bool {
+                    return true;
+                });
                 @mkdir($candidateDir, 0700, true);
                 restore_error_handler();
             }
