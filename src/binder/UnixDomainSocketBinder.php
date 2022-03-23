@@ -2,9 +2,9 @@
 
 namespace TIPC;
 
-class UnixDomainSocketBinder extends SocketBinder
+class UnixDomainSocketBinder
 {
-    public static function bind(&$socket, SocketAddress $address): bool
+    public static function bind(&$socket, UnixDomainSocketAddress $address): bool
     {
         static::cleanUpFile($address->getAddress());
         $umask = umask(0117);

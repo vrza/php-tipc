@@ -70,7 +70,7 @@ class SocketStreamsServer
             return false;
         }
 
-        $bindSuccess = SocketBinder::get($address)::bind($socket, $address);
+        $bindSuccess = $address->bindTo($socket);
 
         if ($bindSuccess === false) {
             $error = socket_last_error($socket);

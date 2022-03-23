@@ -46,6 +46,15 @@ class UnixDomainSocketAddress extends SocketAddress
     }
 
     /**
+     * @param $socket
+     * @return bool
+     */
+    public function bindTo($socket): bool
+    {
+        return UnixDomainSocketBinder::bind($socket, $this);
+    }
+
+    /**
      * @return string
      */
     public function __toString(): string

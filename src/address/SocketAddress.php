@@ -18,4 +18,10 @@ abstract class SocketAddress
      * @return int
      */
     abstract public function getPort(): int;
+
+    /**
+     * @param $socket
+     * @return bool
+     */
+    abstract public function bindTo($socket): bool;
 }

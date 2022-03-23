@@ -40,6 +40,15 @@ class InetSocketAddress extends SocketAddress
     }
 
     /**
+     * @param $socket
+     * @return bool
+     */
+    public function bindTo($socket): bool
+    {
+        return InetSocketBinder::bind($socket, $this);
+    }
+
+    /**
      * @return string
      */
     public function __toString(): string

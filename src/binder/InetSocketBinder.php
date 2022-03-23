@@ -2,9 +2,9 @@
 
 namespace TIPC;
 
-class InetSocketBinder extends SocketBinder
+class InetSocketBinder
 {
-    public static function bind(&$socket, SocketAddress $address): bool
+    public static function bind(&$socket, InetSocketAddress $address): bool
     {
         return socket_bind($socket, $address->getAddress(), $address->getPort());
     }
