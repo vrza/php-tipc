@@ -38,7 +38,7 @@ class SocketStreamClient
                 "socket_create() failed" . PHP_EOL
             );
         }
-        if ($this->verbose > 1) fwrite(STDERR, "Attempting to connect to $this->path... ");
+        if ($this->verbose > 1) fwrite(STDERR, "Attempting to connect to {$this->address}... ");
         if (($result = @socket_connect($this->socket, $this->address->getAddress(), $this->address->getPort())) === false) {
             if ($this->verbose) fwrite(
                 STDERR,

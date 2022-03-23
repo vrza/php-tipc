@@ -24,4 +24,9 @@ abstract class SocketAddress
      * @return bool
      */
     abstract public function bindTo($socket): bool;
+
+    /**
+     * @return string
+     */
+   abstract public function __toString(): string;
 }
