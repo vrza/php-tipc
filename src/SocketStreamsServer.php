@@ -64,8 +64,8 @@ class SocketStreamsServer
     private static function createAndBindSocket(SocketAddress $address)
     {
         $socket = socket_create($address->getDomain(), SOCK_STREAM, 0);
-        if (($socket) === false) {
-            $error = socket_last_error($socket);
+        if ($socket === false) {
+            $error = socket_last_error();
             fwrite(STDERR, "socket_create() failed with error $error: " . socket_strerror($error) . PHP_EOL);
             return false;
         }
@@ -106,7 +106,9 @@ class SocketStreamsServer
     {
         $read = $this->sockets;
         $write = $except = null;
-        set_error_handler(function () {});
+        set_error_handler(static function (int $_errno, string $_errstr): bool {
+            return true;
+        });
         $num = @socket_select($read, $write, $except, $timeoutSeconds, $timeoutMicroseconds);
         restore_error_handler();
         if ($num === false) {
