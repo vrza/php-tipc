@@ -19,7 +19,7 @@ class SocketData
     }
 
     /**
-     * @return string
+     * @return SocketAddress
      */
     public function getAddress(): SocketAddress
     {
