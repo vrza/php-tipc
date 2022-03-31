@@ -19,6 +19,10 @@ class SocketStreamsServer
     private $sockets;
     private $handlers;
 
+    /**
+     * @param SocketData[] $socketsData
+     * @param int $recvBufSize
+     */
     public function __construct(array $socketsData, int $recvBufSize = self::RECV_BUF_SIZE)
     {
         $this->socketsData = $socketsData;
@@ -30,7 +34,7 @@ class SocketStreamsServer
         $this->closeAll();
     }
 
-    public function closeAll()
+    public function closeAll(): void
     {
         foreach ($this->sockets as $socket) {
             if (is_resource($socket) && get_resource_type($socket) === 'Socket') {
@@ -40,7 +44,7 @@ class SocketStreamsServer
         }
     }
 
-    private function isListenerSocket($i)
+    private function isListenerSocket(int $i): bool
     {
         return $i < count($this->socketsData);
     }
@@ -144,13 +148,13 @@ class SocketStreamsServer
         return $num;
     }
 
-    private function addSocket($socket, $i)
+    private function addSocket($socket, int $i): void
     {
         $this->sockets[] = $socket;
         $this->handlers[] = $this->handlers[$i];
     }
 
-    private function removeSocket($socket)
+    private function removeSocket($socket): void
     {
         $pos = array_search($socket, $this->sockets);
         if ($pos !== false) {
@@ -159,7 +163,7 @@ class SocketStreamsServer
         }
     }
 
-    private function handleClientData($socket, $i)
+    private function handleClientData($socket, int $i): void
     {
         $msgHandler = $this->handlers[$i];
         $msg = $this->receiveMessage($socket);
