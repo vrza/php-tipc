@@ -27,7 +27,6 @@ $shutdown = function (int $signo, $siginfo) use ($server) {
 pcntl_signal(SIGINT, $shutdown);
 pcntl_signal(SIGTERM, $shutdown);
 
-$server->listen();
 if ($server->listen() === false) {
     fwrite(STDERR, "Fatal error: could not listen on $address" . PHP_EOL);
     exit(EXIT_SOCKET);
