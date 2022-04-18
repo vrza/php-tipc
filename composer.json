@@ -16,7 +16,7 @@
     },
     "autoload": {
         "psr-4": {
-            "TIPC\\": ["src/", "src/address/", "src/binder/"],
+            "TIPC\\": ["src/address/", "src/binder/", "src/"],
             "TIPC\\Test\\": "test/"
         }
     }
