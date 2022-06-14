@@ -1,9 +1,11 @@
 = Tiny IPC library for PHP
 
-User-friendly, object-oriented API that allows PHP processes to exchange messages over Unix domain sockets.
+User-friendly, object-oriented API for message passing between PHP processes.
+
+Stream sockets are used as message passing channels. A single server can listen for and handle messages on multiple channels, which can include any mix of Unix domain sockets and TCP/IP (v4 and v6).
 
 Messages are PHP strings. Serialisation format is left to user's choice.
 
 == Getting started
 
-A fully working example is included as `test/server.php` and `test/client.php`.
+See examples in the `test/` directory.
