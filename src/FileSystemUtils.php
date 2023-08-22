@@ -47,7 +47,7 @@ class FileSystemUtils
      * or null if a file can not be created.
      *
      * @param string $fileName
-     * @param array $candida
+     * @param array $candidateDirs
      * @return string|null
      */
     public static function findCreatableFilePath(string $fileName, array $candidateDirs): ?string
@@ -68,7 +68,7 @@ class FileSystemUtils
      * directories, regardless of the reason (file exists,
      * insufficient permissions...), as this is not a critical failure.
      *
-     * Returns path to a writeable directory, or false if a writeable
+     * Returns path to a writeable directory, or null if a writeable
      * directory is not available.
      *
      * @param array $candidateDirs
